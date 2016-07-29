@@ -1,0 +1,124 @@
+This is a demo with Iotivity 1.0.0 on several different platforms includes
+1. An Iotivity demo server on Arduino Due with Grove starter kit
+2. An Iotivity demo server on Raspberry Pi 2 with GrovePi python server
+3. An Iotivity demo gateway (both client and server) which is able to run on ARM v7 platforms or on just on a PC
+
+The Iotivity demo gateway can find the demo servers on the same local network and send/receive requests, 
+and it's also an Iotivity server which is able to be found by other Iotivity client such as Android based Iotivity client
+(https://github.com/gerald-yang/android-iotivity-client).
+
+Please notice that the iotivity-1.0.1/extlibs/boost/boost_1_58_0.zip is too big to push to github, so you need to download
+this from iotivity website manually.
+
+The following are the build instructions and hardware configurations.
+
+Arduino with Grove starter kit (http://www.seeedstudio.com/depot/Grove-Starter-Kit-for-Arduino-p-1855.html)
+  Hardware configurations
+    1. Arduino Due board
+
+    2. Plug Grove on Arduino Due
+
+    3. Connect Grove sensors to Grove board
+         Grove Buzzer:             D2
+         Grove Button:             D3
+         Grove Serno:              D6
+         Grove LED:                D7
+         Grove Touch:              D8
+         Grove Temperature sensor: A0
+         Grove Sound sebsor:       A1
+         Grove Light sensor:       A2
+         Grove Angle sensor:       A3
+         Grove RGB LCD:            SDA1, SCL1
+              The second TWI interface on Arduino Due needs to add a 1.5k pullup resister to SDA1 and SCL1 to make it work,
+              please see the second_I2C_LCD.jpg.
+              For the first TWI, the pullup resister is build-in on the board, no need to add it.
+
+    4. Plug Arduino ethernet shield on Grove
+
+
+  Build instructions
+    1. Setup environment
+       source ./env-setup
+
+    2. Build iotivity with arduino-1.5.7
+       ./build_iotivity_arduino.sh
+
+    3. Build the demo server only
+       ./build_iotivity_arduino.sh build demoserver
+
+    4. Program the demoserver to Arduino Due board
+       ./build_iotivity_arduino.sh program demoserver
+
+    5. The demo server is located in iotivity-1.0.0/resource/csdk/stack/samples/arduino/SimpleClientServer/demoserver
+
+
+Raspberry Pi 2 with GrovePi (http://www.dexterindustries.com/GrovePi/)
+  Hardware configurations
+    1. Raspberry Pi 2
+
+    2. Plug GrovePi on Raspberry Pi 2
+
+    3. Connect GrovePi sensors to GrovePi board
+         GrovePi Button:                          D3
+         GrovePi Red LED:                         D4
+         GrovePi Green LED:                       D5
+         GrovePi Blue LED:                        D6
+         GrovePi Temperature and Humidity sensor: D7
+         GrovePi Buzzer:                          D8
+         GrovePi Light sensor:                    A0
+         GrovePi Sound sensor:                    A1
+         GrovePi LCD:                             I2C-2
+         GrovePi Ultrasonic sensor:               D2
+
+  Build instructions
+    1. Build Iotivity on Raspberry Pi 2, please copy iotivity-demo to Raspberry Pi 2 and setup environment
+       source ./env-setup
+
+    2. Install packages for building iotivity
+       sudo apt-get install scons git-core ssh g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev
+                            libboost-thread1.55-dev libboost-all-dev uuid-dev pkg-config libglib2.0-dev libssl-dev
+                            zip
+
+    3. Install packages for accessing GrovePi
+       sudo apt-get install python-smbus python-setuptools python-pip
+       sudo pip install RPi.GPIO
+
+    4. Build demoserver and democlient
+       ./build_iotivity_armv7.sh
+
+    5. The demoserver is located in iotivity-1.0.0/out/linux/armeabi-v7a-hard/release/resource/examples/demoserver
+
+    6. Start the python server to read/write sensors and devices
+       sudo python2.7 python_server/python_server.py
+
+    6. Start demoserver
+       ./run_iotivity_server_rp2.sh
+       
+
+On an armv7 board (on Mediatek 7623 with Ubuntu Snappy Core)
+    1. Copy the democlient built on Raspberry Pi 2 and Iotivity libraries to Mediatek 7623.
+       iotivity-1.0.0/out/linux/armeabi-v7a-hard/release/resource/examples/democlient
+       iotivity-1.0.0/out/linux/armeabi-v7a-hard/release/liboc.so
+       iotivity-1.0.0/out/linux/armeabi-v7a-hard/release/liboctbstack.so
+       iotivity-1.0.0/out/linux/armeabi-v7a-hard/release/liboc_logger.so
+
+    2. Start the demo gateway
+       LD_LIBRARY_PATH=${PATH_TO_IOTIVITY_SO_FILES} ${PATH_TO_DEMOCLIENT}/democlient
+
+
+On regular PC
+  Build instructions
+    1. Build Iotivity democlient on PC
+       ./build_iotivity_pc.sh
+
+    2. The democlient will write sensor data to InfluxDB through curl, so install it first
+       sudo apt-get install curl
+
+    3. Run demo gateway
+       iotivity-1.0.0/out/linux/${ARCH}/resource/examples/democlient ${InfluxDB_IP_address} ${Host_IP_address}
+
+
+Build Android library
+./build_iotivity_android_lib.sh ${TARGET_ARCH}
+Currently the TARGET_ARCH supports armeabi, armeabi-v7a, x86 and x86_64
+

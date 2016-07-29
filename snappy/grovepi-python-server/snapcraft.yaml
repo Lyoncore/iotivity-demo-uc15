@@ -1,0 +1,34 @@
+name: demo-grovepi-server
+version: 1.0.1
+vendor: Gerald Yang <gerald.yang@canonical.com>
+summary: A python server which provides access to sensors and devices on Grovepi
+description: A python server controls all Grovepi sensors and devices, and create a socket for Iotivity demo server
+icon: ./grovepi.png
+
+#binaries:
+#    start-server:
+#        exec: bin/start-server
+#        caps:
+#            - network-client
+#            - network-service
+#        security-template: unconfined
+#        security-policy:
+#            apparmor: grovepi.apparmor
+#            seccomp: grovepi.seccomp
+
+services:
+    start-server:
+        start: bin/start-server
+        description: Start a python server to provide access to sensors and devices on GrovePi
+        caps:
+            - network-client
+            - network-service
+#        security-policy:
+#            apparmor: grovepi.apparmor
+#            seccomp: grovepi.seccomp
+
+parts:
+    i2clib:
+        plugin: make
+        source: .
+

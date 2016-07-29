@@ -1,0 +1,28 @@
+name: demo-iotivity-server
+version: 1.0.3
+vendor: Gerald Yang <gerald.yang@canonical.com>
+summary: An Iotivity demo server provides sensor and device resources on Raspberry Pi 2
+description: An Iotivity demo server, provide access to sensors and devices on Raspberry Pi 2 with GrovePi
+icon: ./iotivity-server.png
+
+#binaries:
+#    start-server:
+#        exec: bin/start-server
+#        caps:
+#            - network-client
+#            - network-service
+#        security-template: unconfined
+
+services:
+    start-server:
+        start: bin/start-server
+        description: start Iotivity server
+        caps:
+            - network-client
+            - network-service
+
+parts:
+    server:
+        plugin: make
+        source: .
+
