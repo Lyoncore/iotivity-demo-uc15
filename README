@@ -7,8 +7,8 @@ The Iotivity demo gateway can find the demo servers on the same local network an
 and it's also an Iotivity server which is able to be found by other Iotivity client such as Android based Iotivity client
 (https://github.com/gerald-yang/android-iotivity-client).
 
-Please notice that the iotivity-1.0.1/extlibs/boost/boost_1_58_0.zip is too big to push to github, so you need to download
-this from iotivity website manually.
+Please notice that the iotivity-1.0.1/extlibs/boost/boost_1_58_0.zip is too big to push to github, 
+if you need to compile with it, please download from iotivity website manually.
 
 The following are the build instructions and hardware configurations.
 
